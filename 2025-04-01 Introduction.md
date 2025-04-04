@@ -306,7 +306,9 @@ SELECT COUNT(DISTINCT kind) from pets;
 
 > [!TIP]
 >
-> Where does `DISTINCT` go? You can think of `DISTINCT` as a qualifier on the *column*, `kind` in this case, so they go together. That is, don't think of `SELECT DISTINCT` as one operator. `SELECT DISTINCT` is really `SELECT` applied on a `DISTINCT column`.
+> Where does `DISTINCT` go? You can think of `DISTINCT` as a qualifier on the *columns*, `kind` in this case, so they go together. When you do `COUNT(DISTINCT kind)`, it's like we're taking the unique `kind`s *first* and *then* counting them.
+>
+> When we `SELECT DISTINCT col1, col2, col3` (multiple columns), the `DISTINCT` is still applied to all columns (that is, it returns unique 3-tuples of `(col1, col2, col3)`).
 
 More aggregate functions (they do what you think they do):
 

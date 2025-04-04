@@ -148,6 +148,7 @@ You can insert into an existing table with `INSERT INTO` with the table name and
 ```sql
 INSERT INTO pets VALUES
   ("casa", 8, "2017-01-01", "cat");
+-- (name, age,   bday,       kind)
 ```
 
 Note that here order matters&mdash;the values are matched one-to-one with the ordering of columns defined in the schema (`CREATE TABLE`).
@@ -157,7 +158,6 @@ Beware some syntactical pitfalls! Consider these problematic inserts:
 ```sql
 INSERT INTO pets VALUES
   (casa, 8, 2017-01-01, cat);
--- (name, age, bday, kind)
 ```
 
 This gives a syntax error. Strings must be quoted. Here we go:
@@ -416,7 +416,7 @@ Analogous SQL operation: `SELECT DISTINCT`. We keep every tuple $t$ in $T$, but 
 
 > [!IMPORTANT]
 >
-> Note that it's `SELECT DISTINCT`, not just `SELECT`. This is just due to the nature of sets, which are defined to not have duplicates.
+> Note that if we're assuming pure set theory, it should be `SELECT DISTINCT`, not just `SELECT` since sets by their nature remove duplicates. However, moving forward, we'll often default to **bag/multiset** semantics unless specified otherwise, in which case you can think of it as `SELECT`. More on [sets vs. bags here](#sets-vs-bags).
 
 An **extended projection** is one where the column mapping can also support an arbitray expression `e` on it:
 
@@ -464,6 +464,22 @@ Analogous SQL operator: `INTERSECT`.
 $$\gamma_{F(x)}(T) = F(T.x)$$
 
 Analogous SQL: aggregate functions like `SUM()`, `MAX()`, etc.
+
+### Sets vs. Bags
+
+It's useful to relate tables in databases to the tables of everyday spreadsheets etc. where the order you choose to maintain them in may inherently matter, but in database, the order the tuples are stored in don't actually matter for the most part (you can manipulate order within *queries* on the tuples, like when using `SORT BY` as we'll probably learn later). This is somewhat alluded to in our introduction of **relational algebra**, which is built atop **set theory**, and **sets** are inherently unordered. For practical implementations however, tables are often implemented as **bags** instead.
+
+If you recall from your introductory CS and/or data structure classes, there are different kinds of data structures for storing **unordered** collections of items.
+
+**Sets** are like their namesake concept in math: unordered collections *without duplicates*. Examples of sets in programming languages include Python's `set`, JavaScript's `Set`, C++'s `std::unordered_set`, etc.
+
+**Bags** aka **multisets** are like sets but without the uniqueness constraint. They are a more general unordered collection, where every element can be included an arbitrary number of times. An example of bags in programming is C++'s `std::multiset`.
+
+So which does SQL use? From Professor on Edstem:
+
+> Nearly all mainstream DBs default to **bags**, and you need to explicitly specify `DISTINCT` to remove duplicates. I'll sometimes assume set semantics to simplify certain concepts, and I will always be clear when that happens.
+
+
 
 <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 <script type="text/x-mathjax-config">

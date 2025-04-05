@@ -1,4 +1,4 @@
-# 2025-04-01 Introduction
+# 2025-04-01/Lecture 1: Introduction & Basic SQL
 
 ## Motivation
 

@@ -1,4 +1,4 @@
-# 2025-04-03 Table Decomposition and Joins
+# 2025-04-03/Lecture 2: Table Decomposition and Joins
 
 You can find all tables (unless specified otherwise) used and created in this lecture in the Lecture 2 database file shared by Professor on [the class website](https://remy.wang/cs143/), also [downloaded to this repository for your convenience](data/lec2.db).
 
@@ -472,7 +472,7 @@ Consider another extreme: one column completely determines another column. Consi
 | remy    | ...   | 123   | UCLA | LA        |
 | zifan   | ...   | 234   | UCLA | LA        |
 | vincent | ...   | 345   | UCLA | LA        |
-| remy    | ...   | 123   | UCLA | seattle   |
+| remy    | ...   | 123   | UW   | seattle   |
 | dan     | ...   | 456   | UW   | seattle   |
 | magda   | ...   | 567   | UW   | seattle   |
 
@@ -491,7 +491,7 @@ This is another situation where we can break up tables. Namely, we can just have
 | remy    | ...   | 123   | UCLA |
 | zifan   | ...   | 234   | UCLA |
 | vincent | ...   | 345   | UCLA |
-| remy    | ...   | 123   | UCLA |
+| remy    | ...   | 123   | UW   |
 | dan     | ...   | 456   | UW   |
 | magda   | ...   | 567   | UW   |
 
@@ -558,7 +558,7 @@ First, some intuition: imagine querying as a human. What would you do if you had
 | remy    | ...   | 123   | UCLA |
 | zifan   | ...   | 234   | UCLA |
 | vincent | ...   | 345   | UCLA |
-| remy    | ...   | 123   | UCLA |
+| remy    | ...   | 123   | UW   |
 | dan     | ...   | 456   | UW   |
 | magda   | ...   | 567   | UW   |
 

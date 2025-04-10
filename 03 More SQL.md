@@ -653,7 +653,7 @@ There are two kinds of values in SQL:
 
 > [!CAUTION]
 >
-> Unfortunately `UNKNOWN` is aka `NULL` in SQLite.
+> `UNKNOWN` doesn't actually exist in SQLite specifically. Where you would see `UNKNOWN`, you would see `NULL` instead.
 
 ### Operators in SQL
 
@@ -713,6 +713,10 @@ For **predicate**, it's also intuitive: the same reason as for data, but because
 > [!IMPORTANT]
 >
 > There is one exception for **predicates**: To explicitly check if `x` is `NULL`, you use: `x IS NULL`, which will return T/F on whether `x` is indeed `NULL`. It *won't* return `NULL` despite the RHS being `NULL`.
+
+> [!IMPORTANT]
+>
+> Remember that `UNKNOWN` doesn't actually exist in SQLite specifically. What *would* be `UNKNOWN` is automatically converted to `NULL` when used as input to a data operator/predicate.
 
 For **logical**, we apply **3 valued logic**:
 

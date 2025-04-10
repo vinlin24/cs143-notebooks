@@ -748,12 +748,45 @@ At first glance, it looks like a lot of combinations to memorize. However, all o
 
 When in doubt, use [the `NULL` rules from earlier](#operators-with-null) and [3 valued logic](#3-valued-logic) to determine what the `WHERE` clause is actually saying and how it would affect the queries.
 
-TODO.
-
 ```sql
 SELECT *
 FROM R
 WHERE R.x=R.x; -- NULL=NULL => UNKNOWN
 ```
 
-TODO.
+Where `R.x` is [`NULL`, the `WHERE` clause evaluates to `UNKNOWN`](#operators-with-null), so that row is *excluded*. The return table is *not* necessarily the same as `R`.
+
+```sql
+SELECT *
+FROM R
+WHERE R.x = R.x
+OR R.x <> R.x; -- NULL <> NULL => UNKNOWN
+```
+
+Same as above.
+
+```sql
+SELECT *
+FROM R
+WHERE null = null; -- NULL=NULL => UNKNOWN
+```
+
+Same as above. It's just explicit this time.
+
+```sql
+SELECT *
+FROM R
+WHERE null <> null; -- NULL <> NULL => UNKNOWN
+```
+
+Same as above. It's just explicit this time.
+
+```sql
+SELECT *
+FROM R
+-- NULL <> NULL => UNKNOWN
+-- NOT UNKNOWN => still UNKNOWN
+WHERE NOT null <> null;
+```
+
+This time we have a nested operation. Just follow through with the rules and you'll find when `WHERE` evaluates to `UNKNOWN`.

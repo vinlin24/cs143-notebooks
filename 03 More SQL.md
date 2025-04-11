@@ -399,7 +399,7 @@ But we want to be cool and solve it using one main query, so we'll use a sub-que
 
 ```sql
 WITH averages AS (SELECT kind, AVG(age) AS a FROM pets GROUP BY kind)
-SELECT * FROM average WHERE average.a > 10.0;
+SELECT * FROM averages WHERE averages.a > 10.0;
 ```
 ```console
 ┌──────┬──────┐

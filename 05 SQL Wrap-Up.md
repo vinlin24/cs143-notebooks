@@ -269,7 +269,7 @@ sqlite> SELECT people.name, job, pets.name, pets.person
 └──────┴──────┴──────┴────────┘
 ```
 
-This demonstrates how joins and sub-queries don't always have an exact equivalent. [More on this ahead.](#monotonicity-and-sub-queries) We were fortunate that `SELECT DISTINCT` happened to give us the same answer anyway for our particular problem.
+This demonstrates how joins and sub-queries don't always have an exact equivalent. We were fortunate that `SELECT DISTINCT` happened to give us the same answer anyway for our particular problem.
 
 ### How About `ALL()`/`ANY()`?
 
@@ -300,7 +300,7 @@ WHERE NOT EXISTS
 
 ## Monotonicity
 
-Motivated from [the previous examples](#un-nesting-sub-queries), we tackle a more general problem: when can and can't sub-queries be un-nested? To answer that, we first introduce the concept of **monotonicity**.
+We tackle a more general problem: when can and can't sub-queries be un-nested? To answer that, we first introduce the concept of **monotonicity**.
 
 Recall from math: a function $f: R \to R$ is **monotone** if $x \le y$ implies $f(x) \le f(y)$.
 
@@ -437,8 +437,6 @@ Finally, we return to the punchline. Why do we care about whether a query is mon
 > [!IMPORTANT]
 >
 > If a query is monotonic, it implies that a nested query can actually be unnested. [&mdash;Wikipedia](https://en.wikipedia.org/wiki/Monotonic_query)
-
-Consider the [nested sub-query earlier we turned into a join](#un-nesting-sub-queries). We found that un-nesting the query didn't actually result in an *exactly* equivalent query, and now you know why.
 
 ### SQL Challenge: People Without Pets (Outer Join Edition)
 

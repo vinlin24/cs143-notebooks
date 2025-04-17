@@ -640,7 +640,7 @@ Recall our `for` loop analogy before. With a `JOIN` and join key, it's like we h
 
 ```python
 for pet in pets:          # FROM pets
-  for people in people:   # JOIN people
+  for person in people:   # JOIN people
     if pet.person == person.name:  # ON <condition>
       print(job)          # SELECT job
 ```
@@ -649,7 +649,7 @@ What if our join key is the degenerate case of just keeping every single combina
 
 ```python
 for pet in pets:
-  for people in people:
+  for person in people:
     print(job)
 ```
 

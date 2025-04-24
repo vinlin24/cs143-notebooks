@@ -154,7 +154,7 @@ More formally:
 >
 > $\forall t,t' \in R: \pi_X(t) = \pi_X(t') \Longrightarrow \pi_Y(t) = \pi_Y(t')$
 >
-> We say that "$X$ **functionally determines** $Y$", or "$Y$ is **functionally determined by** $X$".
+> We say that " $X$ **functionally determines** $Y$ ", or " $Y$ is **functionally determined by** $X$ ".
 
 In other words: if $X$ functionally determines $Y$, every copy of an instantiation of $X$ should have the same instantiation of $Y$ in its tuple.
 
@@ -296,7 +296,7 @@ $$\text{name, job} \to \text{tax \%}$$
 
 How do we prove it? We can do something akin to high school algebra, where we start with a bunch of placeholder variables and then fill out the unknowns based on known rules (FDs in our case).
 
-We fill out the a row with arbitrary variables, representing *some* value for their respective column. We want to show that name and job in conjunction functionally determine tax %, so we'll use identical copies of the arbitrary (name, job) 2-tuple:
+We fill out a row with arbitrary variables, representing *some* value for their respective column. We want to show that name and job in conjunction functionally determine tax %, so we'll use identical copies of the arbitrary (name, job) 2-tuple:
 
 | name | job | location | salary | tax % |
 | ---- | --- | -------- | ------ | ----- |
@@ -447,15 +447,15 @@ $$\lbrace \text{name}, \text{job} \rbrace$$
 
 We then go through each FD and use this idiom: "if the LHS is contained within our set so far, add the RHS to it".
 
-For FD (1) $\text{job} \to \text{salary}$, $\text{job}$ is in our set, so we add $\text{salary}$ to it:
+For FD (1) $\text{job} \to \text{salary}$: $\text{job}$ is in our set, so we add $\text{salary}$ to it:
 
 $$\lbrace \text{name}, \text{job}, \text{salary} \rbrace$$
 
-For FD (2) $\text{name} \to \text{location}$, $\text{name}$ is in our set, so we add $\text{location}$ to it:
+For FD (2) $\text{name} \to \text{location}$: $\text{name}$ is in our set, so we add $\text{location}$ to it:
 
 $$\lbrace \text{name}, \text{job}, \text{salary}, \text{location} \rbrace$$
 
-For FD (3) $\text{location, salary} \to \text{tax \%}$, both $\text{location}$ and $\text{salary}$ are in our set, so we add $\text{tax \%}$ to it:
+For FD (3) $\text{location, salary} \to \text{tax \%}$: both $\text{location}$ and $\text{salary}$ are in our set, so we add $\text{tax \%}$ to it:
 
 $$\lbrace \text{name}, \text{job}, \text{salary}, \text{location}, \text{tax \%} \rbrace$$
 

@@ -577,7 +577,7 @@ In fact, this example demonstrates the general approach to finding a minimal sup
 >
 > A corollary of this process is that if we *add* columns to a superkey, we still get a superkey (like the reverse of the process of finding a minimal superkey).
 >
-> This follows from the both the definition of [closures](#fd-closure). If some set $X$ already functionally determines every column, then extending that set into $X \cup X'$ for any $X'$ will still functionally determine every column.
+> This follows from the definition of [closures](#fd-closure). If some set $X$ already functionally determines every column, then extending that set into $X \cup X'$ for any $X'$ will still functionally determine every column.
 
 ### Candidate Keys
 

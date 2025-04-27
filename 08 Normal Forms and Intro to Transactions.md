@@ -321,9 +321,9 @@ Remember all the way back in Lecture 1 when we were motivating *why* we should u
 
 ### Atomicity/Exercise 1: Free Points for All!
 
-For the first exercise, Professor Remy shared a Google Sheets spreadsheet of definitely fake quiz scores. He felt very benevolent, so a volunteer was asked to try and 10 points to every quiz score. That is, pretend they were SQLite just dutifully going through every spreadsheet row (like table rows) and editing the cells to be 10 more than what they currently were.
+For the first exercise, Professor Remy shared a Google Sheets spreadsheet of definitely fake quiz scores. He felt very benevolent, so a volunteer was asked to add 10 points to every quiz score. That is, they pretended to be SQLite just dutifully going through every spreadsheet row (like table rows) and editing the cells to be 10 more than what they currently were.
 
-Then Remy, pretends his cat is going over the keyboard. Suddenly, much of the volunteer's work was being overwritten in real time. This simulates clashes with the data interfering with the data in real time while the volunteer was still dutifully continuing to add 10 to everything, even the overwritten data (like a bunch of 0 or 2000+ scores, dang).
+Then Remy pretends his cat is going over the keyboard. Suddenly, much of the volunteer's work was being overwritten in real time. This simulates clashes interfering with the data in real time while the volunteer was still dutifully continuing to add 10 to everything, even to the overwritten data (like a bunch of 0 or 2000+ scores, dang).
 
 Finally, the cat "accidentally" revokes editor access to the volunteer. This is like the database crashing or just losing connection.
 
@@ -335,19 +335,19 @@ This motivates the concept:
 >
 > A **transaction** either completes or leaves no trace.
 
-Ideally, the volunteer should have been able to add 10 to every score "in one fell swoop". If a cat comes along and messes it up (a stand-in for just some other user writing to the data), it's separate from what the volunteer's effects (no longer any +10's *interleaved* with other writes).
+Ideally, the volunteer should have been able to add 10 to every score "in one fell swoop". If a cat comes along and messes it up (a stand-in for just some other user writing to the data), it's separate from the volunteer's effects (no longer any +10's *interleaved* with other writes).
 
-**ASIDE:** You may recall this term from courses like CS 111 (Operating Systems). In fact, interleaving writes due to process/thread preemption is the textbook example for motivating atomicity. A statement like `x += 10` is actually the combination of a read, addition, and write; if execution is interrupted during that sequence and `x` is updated by someone else, `x` may be overwritten with the incorrect value when control returns.
+**ASIDE:** You may recall this term from courses like CS 111 (Operating Systems). In fact, interleaving writes due to thread scheduling is the textbook example for motivating atomicity. A statement like `x += 10` is actually the combination of a read, addition, and write; if execution is interrupted during that sequence and `x` is updated by someone else, `x` may be overwritten with the incorrect value when control returns.
 
-<sub><sup></sub></sub>
+<sub><sup>Also yes, those quiz scores were fake.</sup></sub>
 
 ### Consistency/Exercise 2: Playing Favorites!
 
 For the next exercise, Professor was feeling a bit more evil. The volunteer was asked to take 10 points from someone and give 10 points to someone else, and repeat that process however many times they wanted.
 
-No matter what the volunteer does, notice there's some property always holds true: the *sum* of total points is still the same. That is, this scenario is a [zero-sum game](https://en.wikipedia.org/wiki/Zero-sum_game). A property of the data that must always hold is called an **invariant**.
+No matter what the volunteer does, notice there's some property that always holds true: the *sum* of total points is still the same. That is, this scenario is a [zero-sum game](https://en.wikipedia.org/wiki/Zero-sum_game). A property of the data that must always hold is called an **invariant**.
 
-The volunteer dutifully subtracts 10 and adds 10, subtracts 10 and adds 10, etc. But now Remy's cat returns and "accidentally" revokes editor access again! Consider the scenario where the volunteer just took points away but wasn't able to get to giving those points to someone else. Now the sum of points in the table has decreased by 10! The invariant was *violated*.
+The volunteer dutifully subtracts 10 and adds 10, subtracts 10 and adds 10, etc. But now Remy's cat returns and "accidentally" revokes editor access again! Consider the scenario where the volunteer just took points away but didn't yet give those points to someone else. Now the sum of points in the table has decreased by 10! The invariant was *violated*.
 
 The broader concept of enforcing *invariants* is known as:
 
@@ -369,7 +369,7 @@ Now for the next exercise, Professor "accidentally" enabled editor access to eve
 >
 > Multiple concurrent transactions should not interfere.
 
-Everyone was allowed to edit the form at the same time. If the goal was something like "give everyone one point", what's a better way to do it? Have one person do all the changes (like forcing single-thread execution). In fact, this is [kind of what transactions do as we'll demo later](#sqlite-demo).
+Everyone was allowed to edit the spreadsheet at the same time. If the goal was something like "give everyone one point", what's a better way to do it? Have one person do all the changes (like forcing single-thread execution). In fact, this is [kind of what transactions do as we'll demo later](#sqlite-demo).
 
 ### Durability/Exercise 4: Blackout!
 
@@ -381,7 +381,7 @@ We didn't have time for this exercise, but basically, consider the scenario wher
 >
 > Completed transactions are forever.
 
-We can make our transactions atomic, consistent, and isolated, but none of that matter is their effects aren't also *persistent*. Otherwise, that defeats the purpose of a database!
+We can make our transactions atomic, consistent, and isolated, but none of that matters if their effects aren't also *persistent*. Otherwise, that defeats the purpose of a database!
 
 ### Summary
 
@@ -468,9 +468,9 @@ Some key observations:
 - When a user starts a transaction, they now have a level of "exclusivity" over the database. Bob was first to begin a transaction. While the transaction was active, Alice could not write (`INSERT INTO`) nor could she start her own transaction.
 - Users outside of the transaction still have read access though, as evidenced by Alice still being able to run `SELECT`.
 - While a transaction is active, writes during that transaction appear to have taken effect for the user owning the transaction. Bob inserted `1` and was able to read it back out in a subsequent query.
-- While a transaction is active, writes during that transaction do *not* appear to have taken effect for other users. Alice queried the table after Bob inserted `1`, but Alice could not see the new `1`.
+- While a transaction is active, writes during that transaction do *not* appear to have taken effect for other users. Alice queried the table after Bob inserted `1`, but Alice could not see the new `1`. It's as if the writes were buffered privately for Bob only.
 - When a transaction is committed, the writes actually materialize for all users. After Bob commits the transaction, both Alice and Bob could see the newly inserted `1`.
-- When a transaction is committed, the exclusive control ends as well. After Bob commits the transaction, Alice is now able to start her own transaction.
+- When a transaction is committed, the exclusive control ends as well. After Bob commits the transaction, Alice is now able to start her own transaction and perform writes.
 
 This demonstrates the power of transactions. They temporarily restrict control to a user to prevent [concurrent interference](#isolationexercise-3-armageddon), and they ensure that side effects (writes) of a transaction do not actually materialize [until the entire thing is committed](#atomicityexercise-1-free-points-for-all).
 

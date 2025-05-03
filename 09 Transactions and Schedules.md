@@ -634,7 +634,7 @@ $$R_2(A), R_1(B), W_2(A), R_3(A), W_1(B), W_3(A), R_2(B), W_2(B)$$
 
 > [!NOTE]
 >
-> We can always write out the actions among different threads in some strict linear order (remember we're only dealing with [strict orderings](#schedules)). For the purposes of building the precedence graph, it doesn't matter exactly how they're laid out, just that the ordering respects the ordering within each individual transaction.
+> We can always write out the actions among different threads in some strict linear order (remember we're only dealing with [strict orderings](#schedules)).
 
 There are 3 transactions here, so we have 3 nodes:
 

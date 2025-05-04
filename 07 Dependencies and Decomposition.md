@@ -822,7 +822,7 @@ R4(name, job, tax)
 
 For $R_3$, the FD $\text{name} \to \text{location}$ is now a superkey. $R_3$ is in BCNF.
 
-For $R_4$, the (derived) FD $\text{name, job} \to \text{location}$ is also a superkey. $R_4$ is in BCNF.
+For $R_4$, the (derived) FD $\text{name, job} \to \text{tax \%}$ is also a superkey. $R_4$ is in BCNF.
 
 Because all sub-relations are in BCNF, we are done. Our final decomposed layout is:
 

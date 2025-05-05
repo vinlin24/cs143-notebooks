@@ -518,6 +518,57 @@ Suppose we now include a `course` column:
 
 First name and last name together are *no longer* a superkey since for the same combination e.g. `(remy, w)`, we have different courses e.g. `143`, `240`, `249`. That is, $\lbrace \text{first n., last n.} \rbrace \not\to \text{course}$, and thus it no longer functionally determines *all* attributes and thus is no longer a superkey.
 
+### Instance vs. Context
+
+Adding this clarification because it wasn't explicitly defined/immediately clear in lecture. Thank you to the student on Ed for making it clear that I *didn't* make this clear.
+
+In the [above examples](#superkeys-examples), notice that I either claim or imply that the example data in the depicted tables are "representative" of the entire relation. This might not always be the case.
+
+When Professor provides example tables, they are just to show what such a table might look like, just to give concrete examples to an abstract idea and make the problems look more approachable or "relatable". However, this is a good time to be more formal about it: when identifying keys, the answer actually depends on whether you're asked to find based on **instance** or based on **context**. To quote the slides from when I took CS 143 with Professor Rosario:
+
+> [!IMPORTANT]
+>
+> **Finding keys:**
+>
+> - Based on **INSTANCE** means you need to find the keys based on *only* the rows that are given to you.
+> - Based on **CONTEXT** means you need to use your intuition of the context of the data. Think of how the entire relation might look.
+
+For example, suppose we are given these rows and asked to find the superkeys:
+
+| name    | job  | location | salary | tax % |
+| ------- | ---- | -------- | ------ | ----- |
+| remy    | prof | LA       | $30    | 20    |
+| dan     | prof | seattle  | $50    | 15    |
+| vincent | TA   | LA       | $20    | 10    |
+
+Is `name` alone a superkey?
+
+- If it's based on **instance**, then yes. We assume these 3 rows are *the entire table*, and since `name` uniquely identifies any tuple (on account of it being itself unique), it's a superkey.
+- If it's based on **context**, not necessarily. We can't assume the provided rows are representative of the entire table. What if a person has multiple jobs? Then `name` no longer functionally determines `job` and is thus no longer a superkey. You either have to use your intuition/state your assumptions, or (more commonly) you'll be *given* the functional dependencies that already describe the relationships among the data. Use *those* to derive the keys, *not* the example values.
+
+> [!WARNING]
+>
+> The examples in lecture seem to mostly ask about **context**, with provided tables as just example rows. They're usually paired with other information, like the associated FDs, if a column is explicitly a primary key, etc. When given FDs, you should just operate on those and ignore everything else.
+
+That is, a more clear presentation of the "find keys based on **context**" problem should reduce the givens to just a schema $R(X_1, X_2, ..., X_m)$ (like a header row alone) and its functional dependencies $f_1, f_2, ..., f_k$:
+
+```
+Given:
+    R(name, job, location, salary, tax %)
+    f1: job -> salary
+    f2: name -> location
+    f3: location, salary -> tax %
+    f4: name, job -> tax %
+
+Question:
+    What are the superkeys?
+
+Answer:
+    ... use your inference techniques on the FDs ...
+```
+
+Do not care about any specific tuples depicted.
+
 ### Finding Superkeys
 
 Every table has at least one superkey, a **trivial** one if you will.
@@ -606,6 +657,11 @@ Next example:
 | dan      | s       | seattle  | $50    |
 | dan      | o       | zurich   | $50    |
 
+That is, we are given:
+
+- $R(\text{first n., last n., location, salary})$
+- $\text{first n., last n.} \to \text{location, salary}$
+
 `(first n., last. n, location, salary)` is not a key because you can remove columns and it would still be a superkey. `(first n., last. n)` is a candidate key.
 
 Next example:
@@ -620,6 +676,11 @@ Next example:
 | dan      | o       | zurich   | $50    | 101    |
 | dan      | o       | zurich   | $50    | 113    |
 
+That is, we are given:
+
+- $R(\text{first n., last n., location, salary, course})$
+- $\text{first n., last n.} \to \text{location, salary}$
+
 `(first n., last n.)` was found to *not* be a superkey [earlier](#finding-superkeys) because of the different `course`s for the same `(first n., last n.)` 2-tuples. We can add `course` into the set, and now `(first n, last n., course)` is a superkey and candidate key.
 
 Next example:
@@ -630,7 +691,21 @@ Next example:
 | dan     | prof | seattle  | $50    | 15    |
 | vincent | TA   | LA       | $20    | 10    |
 
-`(name, job)` is a candidate key.
+That is, we are given:
+
+- $R(\text{name, job, location, salary, tax \%})$
+- $\text{job} \to \text{salary}$
+- $\text{name} \to \text{location}$
+- $\text{location, salary} \to \text{tax \%}$
+- $\text{name, job} \to \text{tax \%}$
+
+Working through the FDs, you see that `(name, job)` is a candidate key.
+
+> [!WARNING]
+>
+> Note that [the depicted rows are not representative of the full table](#instance-vs-context), as admitted in lecture. Namely, there aren't enough rows to make it obvious that certain column sets (like `name` or `job` alone) don't actually functionally determine the entire relation. We are given the FDs. Just use those and ignore the specific row values.
+>
+> This was a large point of confusion, which is why I clarified instance vs. context. I've only included the table here for consistency and so you can easily map these notes back to the places in the original slides the notes are for.
 
 ### Finding Candidate Keys
 

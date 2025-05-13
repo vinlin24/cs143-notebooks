@@ -384,6 +384,10 @@ Hash functions have the following properties, desirable for password computation
 - But **hard to invert**: $f^{-1}(x) \in O(2^N)$
   - Even if an attacker obtains the hashed value, they shouldn't be able to easily compute what original plaintext password hashes to that value. If hashes weren't hard to invert, it kind of defeats the purpose of using them in the first place!
 
+> [!NOTE]
+>
+> **ASIDE:** There was a lot of dispute in Quiz 10 regarding why a hash function for passwords should be "easy to compute". Intuitively, one would think that we should make it hard such that it hinders brute-force attacks. However, this is what salting already solves. Furthermore, another point (outside of the scope of this class) is actually a security concept: password checking should use [**constant-time programming**](https://www.chosenplaintext.ca/articles/beginners-guide-constant-time-cryptography.html) such as to not leak information about the password via [**side channel attacks**](https://en.wikipedia.org/wiki/Side-channel_attack). It's more difficult to do this if password computation is more expensive.
+
 Instead of storing a table with raw passwords, store the **hashed** passwords.
 
 In SQL, this looks something like:

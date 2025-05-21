@@ -457,7 +457,7 @@ Now how many rows does $T(z, w)$ have? Same thing: count edges between $z$ and $
 
 ### Join Explosion
 
-This formulation also helps us visualize the order of growth in the output of join operations. Remember that we're ultimately interested in $R(x, y) \bowtie S(y, z) \bowtie T(z, w)$. Suppose we're interested in one part of that expression first, $S(y, z) \bowtie T(z, w) = S(y, z) \bowtie_{S.z=T.z} T(z, w)$. The only matching $z$ value is $z=z_4$, so focus on this **subgraph** rooted at $z_4$ for now:
+This formulation also helps us visualize the order of growth in the output of join operations. Remember that we're ultimately interested in $R(x, y) \bowtie S(y, z) \bowtie T(z, w)$. Suppose we're interested in one part of that expression first, $S(y, z) \bowtie T(z, w) = S(y, z) \bowtie_{S.z=T.z} T(z, w)$. Consider the matching $z=z_4$ value. Focus on its **subgraph** rooted at $z_4$ for now:
 
 ```mermaid
 graph LR;
@@ -477,7 +477,7 @@ Let's take the size of $\lbrace y_1, y_2, y_3, y_4 \rbrace$ and $\lbrace w_1, w_
 
 $$|S \bowtie_{S.z=T.z} T| = 16 \in O(n^2)$$
 
-And this is just for one match on the join key too. Suppose we had other matching values. They will similarly each scale quadratically within their subproblem space, so overall we still produce **quadratically** many joined rows. This is consistent with our prior intuition involving joins (think loop semantics).
+And this is just for one match on the join key too. Suppose we had other matching values (like $z=z_0$). They will similarly each scale quadratically within their subproblem space, so overall we still produce **quadratically** many joined rows. This is consistent with our prior intuition involving joins (think loop semantics).
 
 ### Linear Approach
 

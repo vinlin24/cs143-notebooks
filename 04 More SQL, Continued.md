@@ -266,7 +266,7 @@ Now imagine if we had multiple `cat`s that had that oldest `age` of 8. The query
 
 > [!WARNING]
 >
-> Usually you shouldn't use tables as values (like when we compare `age=(<query expression>)`), but in this case, the engine *knows* `MAX(avg)` resolves to a value, so it's fine.
+> Usually you shouldn't use tables as values (like when we compare `age=(<query expression>)`), but in this case, the engine *knows* `MAX(age)` resolves to a value, so it's fine.
 
 Finally, let's try refactoring the sub-query into a `WITH` like before:
 

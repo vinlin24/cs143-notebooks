@@ -132,6 +132,13 @@ These `IN` examples are known as **uncorrelated sub-queries**, sub-queries that 
 
 **ASIDE:** Sub-queries cannot have side-effects.
 
+> [!NOTE]
+>
+> Another (fairly trivial) way to devise the list of people who own pets is given below. Note that this is only possible because the name of the owner is actually included within the pets table. If the two tables were joined by some sort of `pet_id` or other PK, you would have to compute a join as we have seen previously. 
+```sql
+SELECT DISTINCT person FROM pets;
+```
+
 ### Un-Nesting Sub-Queries
 
 Recall from last lecture that we can often rewrite queries with nested sub-queries to use joins instead. Sometimes though, the nested and un-nested version may actually still differ.

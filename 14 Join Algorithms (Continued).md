@@ -564,7 +564,7 @@ In the [above example](#join-trees-with-multiple-children), notice that we no lo
 
 A [**hypergraph**](https://en.wikipedia.org/wiki/Hypergraph) is itself a generalization of a graph. In a graph, an **edge** only connects two nodes. In a hypergraph, an edge can connect any number of nodes&mdash;a **hyperedge**. This allows us to connect tuples with size greater than 2, like some $(y, i, j) \in S$.
 
-Constructing a hypergraph from a set of relations is similar to before:
+Constructing a hypergraph from a set of relations is slightly different from before:
 
 Firstly, we have one node per *unique* variable.
 

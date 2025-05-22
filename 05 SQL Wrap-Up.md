@@ -132,6 +132,32 @@ These `IN` examples are known as **uncorrelated sub-queries**, sub-queries that 
 
 **ASIDE:** Sub-queries cannot have side-effects.
 
+> [!NOTE]
+>
+> Another (fairly trivial) way to devise the list of people who own pets is given below. Note that this is only possible because the name of the owner is actually included within the `pets` table. If the two tables were joined by some sort of `pet_id` or other primary key, you would have to compute a join as we have seen previously.
+>
+> However, **note that in the handout DB file (data/lec5.db), some names appear in the `pets.person` column but are missing from the `people.name` table**, such as `sam` and `lee`. This means that running the query below on that dataset will yield a different result from the canonical answer discussed in lecture, which uses the `people` table as the source of truth for all people.
+>
+> This discrepancy occurs because the tables do not enforce foreign key constraints.
+> If you want to find pet owners who are also listed in the people table (as the queries above do), you should join the tables appropriately.
+> For completeness, here is the query and example output when running this query alone. This query will give the number of unique pet owner names in the pets table (which may or may not be present in the people table). For this example, running the following SQL query
+```sql
+SELECT DISTINCT person FROM pets;
+```
+will give the result
+```console
+┌──────┐
+│ name │
+├──────┤
+│ remy │
+| sam  |
+| lee  |
+└──────┘
+```
+>
+> Note how `sam` and `lee` appear here but are not found in the `people` table (only `remy` appears in the people table).
+
+
 ### Un-Nesting Sub-Queries
 
 Recall from last lecture that we can often rewrite queries with nested sub-queries to use joins instead. Sometimes though, the nested and un-nested version may actually still differ.

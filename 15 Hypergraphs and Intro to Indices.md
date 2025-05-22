@@ -331,7 +331,7 @@ graph BT;
   T[T];
 ```
 
-Suppose we remove in the order $R \to S \to S \to T$ like we did [above](#making-hypergraphs-acyclic).
+Suppose we remove in the order $R \to S \to T \to U$ like we did [above](#making-hypergraphs-acyclic).
 
 Start with $R$, whose parent is $U$. Remove $R$ from the hypergraph, but connect $R$ to $U$ in the predicate graph:
 

@@ -177,7 +177,7 @@ In total, we have 3 **ears**: $R, T, U$. They all happen to have the same **pare
 
 ### Algorithm: Check If Hypergraph Is Acyclic
 
-Now we're ready to introduce the first version of our algorithm, which simply takes in some hypergraph $HG$ and returns a Boolean yes/no on whether $HG$ is acylic. It's quite simple:
+Now we're ready to introduce the first version of our algorithm, which simply takes in some hypergraph $HG$ and returns a Boolean yes/no on whether $HG$ is acylic.
 
 > [!IMPORTANT]
 >
@@ -185,11 +185,11 @@ Now we're ready to introduce the first version of our algorithm, which simply ta
 >
 > ```
 > While HG still has ears:
->   1. Pick any ear.
+>   1. Pick any ear, or if there's only one hyperedge left, pick that.
 >   2. Remove it. That is:
 >     i. Remove any vertex exclusive to the ear.
 >     ii. Remove the hyperedge itself (keeping any vertices still in other hyperedges).
-> HG is now empty <=> original HG is acyclic.
+> If HG is now empty <=> original HG is acyclic.
 > ```
 
 Let's walk through the example from above with 3 ears: $\lbrace R, T, U \rbrace$.
@@ -217,7 +217,7 @@ Suppose we arbitrarily choose $S$. We remove $i, j \in S$. Then, we remove the $
 
 ![](assets/lec15/hypergraph_after_removing_S.png)
 
-$R$ is the only hyperedge left. **We vacuously consider it an ear as well.** Thus, we remove it, leaving behind an empty hypergraph.
+$R$ is the only hyperedge left. We remove it, leaving behind an empty hypergraph.
 
 Because we were able to remove all hyperedges, the original hypergraph is acylic. This further means that an acyclic predicate graph exists for this hypergraph.
 
@@ -307,7 +307,7 @@ It turns out, all we need to do is update the [algorithm above](#algorithm-check
 > ```
 > Initialize predicate graph with (disconnected) nodes for each relation.
 > While HG still has ears:
->   1. Pick any ear.
+>   1. Pick any ear, of if there's only one hyperedge left, pick that.
 >   2. Remove it. That is:
 >     i. Remove any vertex exclusive to the ear.
 >     ii. Remove the hyperedge itself (keeping any vertices still in other hyperedges).

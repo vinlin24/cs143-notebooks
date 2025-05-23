@@ -197,9 +197,9 @@ From last lecture, we know that with the graph formulation, this is a matter of 
 
 $9 + 1 = 10$ output tuples.
 
-From inspection, we know that the full three-way join $(R \bowtie S) \bowtie T$ will only output 2 tuples. There are only two "full" paths from $x \to y \to z \to w$ (see: Lecture 13). Thus, our initial computation of $R \bowtie S$ produced 8 wasted tuples.
+From inspection, we know that the full three-way join $(R \bowtie S) \bowtie T$ will only output 4 tuples. There are only 4 "full" paths from $x \to y \to z \to w$ (see: Lecture 13). Thus, our initial computation of $R \bowtie S$ produces 6 wasted tuples.
 
-Now let's look at $(S \bowtie T) \bowtie T$. Specifically, the first computed sub-expression $(S \bowtie T)$. How many tuples would this join produce?
+Now let's look at $(S \bowtie T) \bowtie R$. Specifically, the first computed sub-expression $(S \bowtie T)$. How many tuples would this join produce?
 
 Using the same techniques (either counting edges or paths):
 

@@ -397,6 +397,7 @@ S UNION T;
 $$S - T$$
 
 This takes the **set difference** between the two relations. That is, keep the tuples in $S$ but exclude tuples that also appear in $T$.
+In other words, keep the tuples in $S$ that do not also appear in $T$.
 
 This is equivalent to the SQL:
 

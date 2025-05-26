@@ -741,7 +741,7 @@ WHERE P.UserID NOT IN
 (SELECT R.UserID FROM Regist R);
 ```
 
-Once it's an **uncorrelated sub-query**, we can safely extract it into its own query that's run only once. We can unnest using set differenceL
+Once it's an **uncorrelated sub-query**, we can safely extract it into its own query that's run only once. We can unnest using set difference.
 
 ```sql
 SELECT P.UserID

@@ -598,7 +598,7 @@ The trivial superkey is:
 
 $$\lbrace \text{name, job, location, salary, tax \%} \rbrace$$
 
-We can find more superkeys by removing rows until the attribute set is no longer a superkey. We can do this by dropping columns that are already functionally determined by other columns in the superkey.
+We can find more superkeys by removing columns until the attribute set is no longer a superkey. We can do this by dropping columns that are already functionally determined by other columns in the superkey.
 
 1. Salary is already functionally determined by job, so we can drop salary without reducing the set's closure. So this set is still a superkey:
 

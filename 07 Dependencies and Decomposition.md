@@ -261,8 +261,8 @@ Hopefully this is obvious. The columns are exactly equal! "If I know $A$, I know
 
 In fact, a set of columns always functionally determines a *subset* of those columns:
 
-$$AB \to A$$
-$$AB \to B$$
+$$\{A, B\} \to A$$
+$$\{A, B\} \to B$$
 
 If I know both $A$ and $B$, of course I know $A$ individually as well! Thus:
 

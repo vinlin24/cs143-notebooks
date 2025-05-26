@@ -347,6 +347,29 @@ Notice that the parent's node key is now outdated&mdash;the node key $10$ implie
 
 Finally, as an exercise: what happens if that causes the parent node to itself fall below half capacity? Think about how we can continue, considering how we handled it for [insertions](#inserting-into-a-b-tree).
 
+### Online Tools for Visualization
+
+From my post on Ed:
+
+This online tool is great for B+ tree visualization: https://www.cs.usfca.edu/~galles/visualization/BPlusTree.html
+
+One caveat is that it uses the term **degree** differently from how it's usually defined. In the tool, I believe they use it to refer to the number of internal node pointers (so select **5** if you want node capacity of **4** like used in the lecture examples).
+
+Other than that, it seems to **search**, **insert**, and **delete** as consistent with what we taught. You can also use the controls to pause and step forward/backwards through the animations. You can also play around with other cases we didn't explicitly cover in lecture, like:
+
+- What does it look like when we search for a value that doesn't exist in the tree?
+- What if we insert duplicate values? What if we search for/delete a value with duplicates?
+- What if the insertion splitting recurses up to the top? How is a new root node created?
+- What if deletion causes the *parent* to fall below half capacity? You can infer what will happen based on how we handle insertion (hint: recursion).
+
+This tool has much a much smoother interface and animations and also lets you visualize **range queries**: https://bplustree.app
+
+However, this tool does not merge deletions (to respect the invariant of internal nodes being at least half full), so be wary of that.
+
+This tool lets you draw B+ trees from a text format: https://projects.calebevans.me/b-sketcher/
+
+This lets you draw the nodes the way you want from the get-go instead of tediously sitting through insertions (note that it's on *you* to draw one that respects the invariants though). It also has convenient support for exporting/copying the rendered B+ tree, so it's great for generating and pasting B+ trees into your notes (it's what I used in my notes as well).
+
 ## Indices in SQLs
 
 How do we add an index in SQL?

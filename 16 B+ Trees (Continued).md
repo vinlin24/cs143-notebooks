@@ -184,6 +184,183 @@ $(y, z)$ starts as a non-ear, but after removing the ear $(z, w)$, it turns $(y,
 
 </details>
 
-## TODO
+## B+ Trees (Continued)
 
-TODO: notes for this lecture coming soon.
+Last lecture, we introduced the **B+ tree**, which is actually an extension of the **B tree** data structure specialized for database applications. In a B+ tree, we only store table keys in the **leaf nodes** and also connect the leaf nodes as a linked list.
+
+> [!WARNING]
+>
+> From here on out, Professor may use B tree and B+ tree interchangeably. Know that he's always referring to B+ trees unless specified otherwise.
+
+### Node Structure
+
+Internal nodes store **node keys**. These values encode *ranges* of table keys that their subtrees ultimately contain at their leaves.
+
+Leaf nodes store **table keys**. These are actual key values from database tables e.g. `student_id`.
+
+Every node has a *fixed* length. We'll define the number of keys stored as **capacity**. In standard terminology, we also have this definition:
+
+$$\text{degree} = \frac{\text{capacity}}{2}$$
+
+This comes from another invariant of the B+ tree:
+
+> [!IMPORTANT]
+>
+> Every B+ tree node except for the root is always at least half full.
+
+Thus, you can think of the **degree** as at least how many entries you want to have in a node. It follows then that the capacity is just double that.
+
+The number of *pointers* stored in **internal nodes** is the $\text{capacity} + 1$. Each pointer sits "between" an adjacent pair of keys, with pointers at the the two edges as well. Each pointer points to a subtree containing table keys in the interval $[\text{left}, \text{right})$, where $\text{left}$ is the node key on the pointer's left and $\text{right}$ is the node key on the pointer's right. The pointers on the edges simply use their respective infinity as the other bound.
+
+Consider this example internal node with $\text{capacity} = 4$, with node keys $10, 20, 30, 40$ (B+ trees rendered using the [B-Sketcher online tool](https://projects.calebevans.me/b-sketcher/)):
+
+![](assets/lec16/b+tree_node_structure.png)
+
+There are $4 + 1 = 5$ pointers. From left to right, they direct to subtrees with key values:
+
+- $k < 10$
+- $10 \le k < 20$
+- $20 \le k < 30$
+- $30 \le k < 40$
+- $k \ge 40$
+
+Remember that the intervals are closed on the lower end and open on the upper end.
+
+**Leaf nodes** instead store a pointer per table key, namely to the actual record associated with the table key.
+
+Other important properties:
+
+- All keys within a B+ tree node are **sorted**.
+- A B+ tree by nature is **balanced**. All leaves are always at the same level.
+
+### Searching a B+ Tree
+
+Searching a B+ tree is very similar in nature to searching a **binary search tree (BST)** in that we compare the queried value $k$ to the current node to decide which pointer to follow. In the case of a B+ tree internal node, we have multiple node keys to test. Because they are stored in sorted order, we can simply sweep the node keys until we reach one that is $\ge k$. We then follow the pointer that sits just before that node key (or use the last pointer if $k$ happens to be $\ge$ every node key).
+
+For example, suppose we're searching for $k=12$ in this B+ tree:
+
+![](assets/lec16/b+tree_searching_example.png)
+
+1. We start at the root node and linearly scan the node keys until we reach a node key $K$ such that $k < K$. In this case, $k = 12 < 50$, so we follow the first pointer down the tree.
+2. We then linearly scan node keys again. $12 \ge 10$, so we move on. $12 < 20$, so we follow the second pointer down the tree.
+3. Now we're at the last level, so we just linearly scan the table keys until we find $k$, or declare that $k$ is not in the tree if we reach the end of the node. We check $10$, $11$, and then finally $12 = k$, so we've found our table key.
+
+Leaf nodes store pointers to the actual records associated with the table keys, so if we want to retrieve the actual data for $k = 12$, we can now do that through the pointer.
+
+Notice that the sorted nature of the keys as well as the pointers between leaf nodes make **range queries** similarly easy to implement. Suppose we're interested in all keys in the range $[3, 13]$.
+
+1. We'll first traverse down the tree as outlined above to locate $k = 3$. Then, we simply continue the linear scan down the leaf node to collect $k = 4 \le 13$.
+2. We still have leaf nodes left and have not reached our upper bound $13$ yet, so we can follow the horizontal pointer to the next leaf node and continue our linear scan. We collect $k = 10, 11, 12, 13 \le 13$. Now at this point, we can stop.
+3. We've found the keys $\lbrace 3, 4, 10, 11, 12, 13 \rbrace \in [3, 13]$. If we want the data associated with those keys, we can access them through the stored pointers.
+
+### Inserting into a B+ Tree
+
+Insertion is a lot more involved because of the tricky invariants we need to maintain at all times in the B+ tree. Namely, every node has a *fixed* length (capacity), and parent node keys have to be kept in lock step with their children key ranges.
+
+There are two cases we'll consider:
+
+**CASE I:** "Just insert". We traverse down the B+ tree to the correct leaf node, and if the node still has vacancy *and* the key belongs after all the other existing keys in the node, just insert that key in the first vacant slot.
+
+Suppose we want to insert $k=14$ into this B+ tree:
+
+![](assets/lec16/b+tree_insertion_case1_before.png)
+
+We would simply insert it right after $11$ in its leaf node:
+
+![](assets/lec16/b+tree_insertion_case1_after.png)
+
+**CASE II:** If the correct leaf node is already at capacity:
+
+1. We first pretend to insert $k$ anyway, "overflowing" it.
+2. We then *split* the leaf node into two halves. The existing leaf node just drops the greater half of its keys, keeping the lesser half. The greater half of the keys get assigned to a newly allocated leaf node (with the original node connecting to the new node to close the linked list).
+3. Update the parent. Shift over its keys & pointers and insert the lower bound of the new node as the key for the new vacancy, directing a new pointer down to the new node. If the parent is already full, recurse: treat the insertion into the parent node as its own Step 1&mdash;pretend to overflow it and follow the same splitting algorithm. If this recurses all the way up to the root, a new root may be created.
+
+Suppose we want to insert $k=16$ into this B+ tree:
+
+![](assets/lec16/b+tree_insertion_case2_before.png)
+
+First we pretend like we inserted $16$ right after $15$ in its node:
+
+![](assets/lec16/b+tree_insertion_case2_overflow.png)
+
+We then split the node into halves and connect them:
+
+![](assets/lec16/b+tree_insertion_case2_split.png)
+
+Pretend that the `|-->|` in the middle of the leaf node represents a splitting into two leaf nodes and a pointer connecting them. I can't draw them as separate nodes or the online tool will automatically connect parent pointers, which we haven't gotten to yet.
+
+We now need to update the parent because we have a new node with table keys $(14, 15, 16)$ that needs a pointer down to it. Namely, the parent should have a pointer just after a new node key of $14$, since the new node contains values $\ge 14$. In this case, the parent is already at capacity, so we'll recurse: pretend to insert $14$, overflowing it:
+
+![](assets/lec16/b+tree_insertion_case2_parent_overflow.png)
+
+Then split it and update *their* parent (this time, the parent has vacancy, so the insertion does not cause further recursing):
+
+![](assets/lec16/b+tree_insertion_case2_parent_update.png)
+
+### Deleting from a B+ Tree
+
+Deletion is similarly involved because of the aforementioned invariants but also the one where every node needs to be at least half full at all times.
+
+We consider three cases:
+
+**CASE I:** "Just delete". If deleting an entry would *not* cause a node to go below half its capacity, just delete it, and you're done.
+
+For example, we can simply delete $k=16$ from its node here:
+
+![](assets/lec16/b+tree_deletion_case1.png)
+
+**CASE II:** If deleting *would* cause the node to fall below the capacity invariant, you "steal" from your neighbor.
+
+For example, suppose we delete $k=11$ from this B+ tree:
+
+![](assets/lec16/b+tree_deletion_case2_before.png)
+
+The node would fall below half capacity, so we can "steal" $4$ from its left neighbor:
+
+![](assets/lec16/b+tree_deletion_case2_steal.png)
+
+But that also means we need to update the parent because the parent's node key needs to reflect the child's new lower bound:
+
+![](assets/lec16/b+tree_deletion_case2_parent_update.png)
+
+Note that we can also steal from the leaf node's right neighbor if need be (also updating its parent pointer's associated key).
+
+**CASE III:** What if both neighbors would also fall below capacity if we steal from them? For insertion, the recursive chain reaction can be done in $\log(N)$ steps because it goes upwards into parent levels. If we were to chain react *horizontally* (among leaf nodes), it could take $\frac{N}{2} \in O(N)$ steps. This is no bueno. Instead, we can borrow the same principle from insertion, but in reverse this time. Like how we split in insertion, we can *merge* nodes together:
+
+1. Delete the key.
+2. Then merge the leaf node with its neighbor.
+3. Update parent.
+
+Note that this case is only taken if the nodes involved are already at half capacity, so merging the nodes is always valid (it won't cause the newly merged node to overflow; the invariants are maintained).
+
+For example, suppose we want to remove $k=11$ from this B+ tree:
+
+![](assets/lec16/b+tree_deletion_case3_before.png)
+
+We can't steal from either neighbor because they're already at half capacity. Let's first delete $11$ anyway. Then, *merge* the node with its left neighbor:
+
+![](assets/lec16/b+tree_deletion_case3_merge.png)
+
+Notice that the parent's node key is now outdated&mdash;the node key $10$ implies that all table keys below the leftmost pointer are $< 10$, but that's no longer true because we now have table key $10$ from the merge. We update the parent by deleting that node key as well and shifting over the node keys:
+
+![](assets/lec16/b+tree_deletion_case3_parent_update.png)
+
+Finally, as an exercise: what happens if that causes the parent node to itself fall below half capacity? Think about how we can continue, considering how we handled it for [insertions](#inserting-into-a-b-tree).
+
+## Indices in SQLs
+
+How do we add an index in SQL?
+
+From https://www.sqlitetutorial.net/sqlite-index/:
+
+```sql
+CREATE INDEX index_name
+ON table_name(column_list);
+```
+
+There are two types of indices:
+
+- **Clustered** indices: in addition to creating the index, the records themselves are also stored contiguously in memory.
+- **Unclustered** indices: the records might not be in contiguous in record.
+
+To be continued.

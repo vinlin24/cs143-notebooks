@@ -556,7 +556,7 @@ Remember the **declarative** design of SQL? For given SQL, there are multiple wa
 
 Which one is more **efficient**? We actually can't know for sure, but it's likely that the *second* one is more efficient. Think about it: **selection** guarantees that the intermediate result is a subset of the original table, so we would be applying a join on a potentially smaller table downstream if we do the selection first!
 
-This is known as "**selection push-down**", and it's one of many **heuristics** used automatically by the query automatically.
+This is known as "**selection push-down**", and it's one of many **heuristics** used automatically by the query.
 
 **ASIDE:** When would it *not* be optimal to use selection push-down? A scenario that comes to mind is when we somehow know ahead of time the join will be empty, in which case there's no point in doing the selection beforehand.
 

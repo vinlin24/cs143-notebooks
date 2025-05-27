@@ -240,7 +240,7 @@ Compare these schedules:
 </tr>
 </table>
 
-In the left (serial) schedule, we have 6 "steps" but we're idling in some of them. In the right (non-serial) schedule, we exploit concurrency between he CPU and the disk by overlapping computation with read/write operations, producing a schedule that completes in only 4 "steps".
+In the left (serial) schedule, we have 6 "steps" but we're idling in some of them. In the right (non-serial) schedule, we exploit concurrency between the CPU and the disk by overlapping computation with read/write operations, producing a schedule that completes in only 4 "steps".
 
 Intuitively:
 - When $T_1$ is performing some computation `x = 2x`, why *shouldn't* $T_2$ start on its `READ(B)`? They're handled by separate devices (CPU vs. disk).

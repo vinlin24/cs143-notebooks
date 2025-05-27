@@ -395,7 +395,7 @@ Now consider this schedule:
 |       | W(A)  |
 
 - `T1.R(A)` and `T2.R(A)` don't conflict because reads don't conflict.
-- `T2.R(A)` and `T2.W(A)` *could* conflict. They don't in this specific schedule, but if the transactions are interleaved differently in another schedule, we'll have a problem. For example, if the write to A gets ordered *before* its read, the read will now see a different data state.
+- `T2.R(A)` and `T1.W(A)` *could* conflict. They don't in this specific schedule, but if the transactions are interleaved differently in another schedule, we'll have a problem. For example, if the write to A gets ordered *before* its read, the read will now see a different data state.
 
 Bringing together our above findings:
 

@@ -628,7 +628,7 @@ Our graph formulation is as follows:
 - Nodes: transactions
 - Edges: conflicts (between transactions)
 
-Let $R_i(x)$ denote a read on table $x$ from transaction $i$ and $W_i(x)$ denote a write to table $x$ from transaction $j$. Suppose we have this collection of read/write actions from several transactions:
+Let $R_i(x)$ denote a read on table $x$ from transaction $i$ and $W_j(x)$ denote a write to table $x$ from transaction $j$. Suppose we have this collection of read/write actions from several transactions:
 
 $$R_2(A), R_1(B), W_2(A), R_3(A), W_1(B), W_3(A), R_2(B), W_2(B)$$
 

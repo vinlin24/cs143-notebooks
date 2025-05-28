@@ -1,5 +1,9 @@
 # 2025-05-22/Lecture 16: B+ Trees Continued
 
+> [!NOTE]
+>
+> Some of the content regarding B+ tree [insertion](#inserting-into-a-b-tree) and [deletion](#deleting-from-a-b-tree) was clarified in **2025-05-27/Lecture 17**, but I just included/updated the existing notes here for those topics.
+
 ## Lecture Quiz
 
 ### Question 1
@@ -184,15 +188,13 @@ $(y, z)$ starts as a non-ear, but after removing the ear $(z, w)$, it turns $(y,
 
 </details>
 
-## B+ Trees (Continued)
+## B+ Tree Node Structure
 
-Last lecture, we introduced the **B+ tree**, which is actually an extension of the **B tree** data structure specialized for database applications. In a B+ tree, we only store table keys in the **leaf nodes** and also connect the leaf nodes as a linked list.
+Last lecture, we introduced the **B+ tree**, which is actually an extension of the **B-tree** data structure specialized for database applications. In a B+ tree, we only store table keys in the **leaf nodes** and also connect the leaf nodes as a linked list.
 
 > [!WARNING]
 >
-> From here on out, Professor may use B tree and B+ tree interchangeably. Know that he's always referring to B+ trees unless specified otherwise.
-
-### Node Structure
+> From here on out, Professor may use B-tree and B+ tree interchangeably. Know that he's always referring to B+ trees unless specified otherwise.
 
 Internal nodes store **node keys**. These values encode *ranges* of table keys that their subtrees ultimately contain at their leaves.
 
@@ -224,7 +226,9 @@ There are $4 + 1 = 5$ pointers. From left to right, they direct to subtrees with
 - $30 \le k < 40$
 - $k \ge 40$
 
-Remember that the intervals are closed on the lower end and open on the upper end.
+> [!WARNING]
+>
+> Remember that the intervals are **closed** on the **lower** end and **open** on the **upper** end.
 
 **Leaf nodes** instead store a pointer per table key, namely to the actual record associated with the table key.
 
@@ -232,8 +236,10 @@ Other important properties:
 
 - All keys within a B+ tree node are **sorted**.
 - A B+ tree by nature is **balanced**. All leaves are always at the same level.
+- All node keys occupying an internal node must have pointers on *both* sides of it (for example, we can't have something like a $20$ and a pointer to the left of it but no pointer to the right of it).
+- In practice, we align the size of each node with the size of data we read from disk, which is typically in units of **pages**. Thus the capacity of each node is set such that the entire node fits in one disk page.
 
-### Searching a B+ Tree
+## Searching a B+ Tree
 
 Searching a B+ tree is very similar in nature to searching a **binary search tree (BST)** in that we compare the queried value $k$ to the current node to decide which pointer to follow. In the case of a B+ tree internal node, we have multiple node keys to test. Because they are stored in sorted order, we can simply sweep the node keys until we reach one that is $\ge k$. We then follow the pointer that sits just before that node key (or use the last pointer if $k$ happens to be $\ge$ every node key).
 
@@ -247,21 +253,25 @@ For example, suppose we're searching for $k=12$ in this B+ tree:
 
 Leaf nodes store pointers to the actual records associated with the table keys, so if we want to retrieve the actual data for $k = 12$, we can now do that through the pointer.
 
+### Range Queries
+
 Notice that the sorted nature of the keys as well as the pointers between leaf nodes make **range queries** similarly easy to implement. Suppose we're interested in all keys in the range $[3, 13]$.
 
 1. We'll first traverse down the tree as outlined above to locate $k = 3$. Then, we simply continue the linear scan down the leaf node to collect $k = 4 \le 13$.
 2. We still have leaf nodes left and have not reached our upper bound $13$ yet, so we can follow the horizontal pointer to the next leaf node and continue our linear scan. We collect $k = 10, 11, 12, 13 \le 13$. Now at this point, we can stop.
 3. We've found the keys $\lbrace 3, 4, 10, 11, 12, 13 \rbrace \in [3, 13]$. If we want the data associated with those keys, we can access them through the stored pointers.
 
-### Inserting into a B+ Tree
+## Inserting into a B+ Tree
 
 Insertion is a lot more involved because of the tricky invariants we need to maintain at all times in the B+ tree. Namely, every node has a *fixed* length (capacity), and parent node keys have to be kept in lock step with their children key ranges.
 
-There are two cases we'll consider:
+There are three cases we'll consider:
 
-**CASE I:** "Just insert". We traverse down the B+ tree to the correct leaf node, and if the node still has vacancy *and* the key belongs after all the other existing keys in the node, just insert that key in the first vacant slot.
+### CASE I: Just Insert
 
-Suppose we want to insert $k=14$ into this B+ tree:
+We traverse down the B+ tree to the correct leaf node, and if the node still has vacancy, just insert that key into the node.
+
+Suppose we want to insert $k=14$ into this (abbreviated, note the missing pointers) B+ tree:
 
 ![](assets/lec16/b+tree_insertion_case1_before.png)
 
@@ -269,13 +279,15 @@ We would simply insert it right after $11$ in its leaf node:
 
 ![](assets/lec16/b+tree_insertion_case1_after.png)
 
-**CASE II:** If the correct leaf node is already at capacity:
+### Case II: Splitting a Leaf at Capacity
+
+If the correct leaf node is already at capacity:
 
 1. We first pretend to insert $k$ anyway, "overflowing" it.
 2. We then *split* the leaf node into two halves. The existing leaf node just drops the greater half of its keys, keeping the lesser half. The greater half of the keys get assigned to a newly allocated leaf node (with the original node connecting to the new node to close the linked list).
-3. Update the parent. Shift over its keys & pointers and insert the lower bound of the new node as the key for the new vacancy, directing a new pointer down to the new node. If the parent is already full, recurse: treat the insertion into the parent node as its own Step 1&mdash;pretend to overflow it and follow the same splitting algorithm. If this recurses all the way up to the root, a new root may be created.
+3. Update the parent. Shift over its keys & pointers and insert the lower bound of the new node as the key for the new vacancy, directing a new pointer down to the new node.
 
-Suppose we want to insert $k=16$ into this B+ tree:
+Suppose we want to insert $k=16$ into this (abbreviated, note the missing pointers) B+ tree:
 
 ![](assets/lec16/b+tree_insertion_case2_before.png)
 
@@ -289,43 +301,101 @@ We then split the node into halves and connect them:
 
 Pretend that the `|-->|` in the middle of the leaf node represents a splitting into two leaf nodes and a pointer connecting them. I can't draw them as separate nodes or the online tool will automatically connect parent pointers, which we haven't gotten to yet.
 
-We now need to update the parent because we have a new node with table keys $(14, 15, 16)$ that needs a pointer down to it. Namely, the parent should have a pointer just after a new node key of $14$, since the new node contains values $\ge 14$. In this case, the parent is already at capacity, so we'll recurse: pretend to insert $14$, overflowing it:
+We now need to update the parent because we have a new node with table keys $(14, 15, 16)$ that needs a pointer down to it. Namely, the parent should have a pointer just after a new node key of $14$, since the new node contains values $\ge 14$. We can fix this by copying that lower bound $14$ and inserting it into the parent:
 
-![](assets/lec16/b+tree_insertion_case2_parent_overflow.png)
+![](assets/lec16/b+tree_insertion_case2_parent_insertion.png)
 
-Then split it and update *their* parent (this time, the parent has vacancy, so the insertion does not cause further recursing):
+Or more generally:
 
-![](assets/lec16/b+tree_insertion_case2_parent_update.png)
+> [!IMPORTANT]
+>
+> When splitting a **leaf node**, copy the leftmost key of the new node and insert it into the parent.
 
-### Deleting from a B+ Tree
+### Case III: Splitting a Leaf at Capacity with Parent at Capacity
+
+Note that this is really just a generalization of [**Case II**](#case-ii-splitting-a-leaf-at-capacity).
+
+Now what happens if we follow [**Case II**](#case-ii-splitting-a-leaf-at-capacity) but then the *parent* is also at capacity? We treat it like an insertion on the parent node, which we will then recursively split to resolve overflows. However, when splitting an **internal node**, we follow a slightly different algorithm:
+
+> [!IMPORTANT]
+>
+> When splitting an **internal node**, *don't* copy any keys; instead, *promote* the midpoint into its parent.
+>
+> Note that this process is recursive: if the internal node's parent is also at capacity, we repeat. If this reaches the root node, we can ultimately *create a new root* for the promoted value.
+
+Suppose we want to insert $k=16$ into this (abbreviated, note the missing pointers) B+ tree:
+
+![](assets/lec16/b+tree_insertion_case3_before.png)
+
+First we pretend to insert $k=16$ anyway, then split the node, then copy $14$ up into the parent like we did [before](#case-ii-splitting-a-leaf-at-capacity):
+
+![](assets/lec16/b+tree_insertion_case3_leaf_split.png)
+
+The parent node is currently overflowing, so we need to split it as well. This time, we'll split it into *three* parts: a lesser half, the midpoint key, and the greater half. We keep the two halves around (which become siblings) and promote the midpoint ($20$ in this case) up into the grandparent:
+
+![](assets/lec16/b+tree_insertion_case3_parent_split.png)
+
+Convince yourself this B+ tree still upholds its invariants. All nodes are at least half capacity, and all pointers point to subtrees with keys in their ranges.
+
+### ASIDE: Why Promote Instead of Copy When Splitting Internal Nodes
+
+If you're curious about why we need to promote instead of copy, see the discussion on Ed #107. Basically, when we just split internal nodes without moving up one of its keys, it leaves the tree in an invalid state. Consider this example where we need to insert a new leaf node lower bound of $14$ into a parent node of $(10, 20, 30, 40)$. Suppose we just split the internal node into $(10, 14)$ and $(20, 30, 40)$:
+
+![](assets/lec16/b+tree_invalid_state.png)
+
+Notice how there's no way to arrange our pointers such that they make sense. If we connect the node to the left of $20$ (the edge with an X on it) to the $(20, ...)$ leaf node, it would be invalid because such a pointer needs keys $< 20$, and $20 \ge 20$. If we instead use the pointer to the right of $20$ (the red edge), the pointer itself would be correct, but then our internal node would be missing a pointer on its left edge. [Recall](#b-tree-node-structure) that node keys must have pointers on *both* sides of them.
+
+This is caused by the fact that we've introduced one "extra" pointer in the internal node layer. Splitting up the node exposes an "edge" on the key that ends up as the leftmost key in the new node, and that edge requires a new pointer. To fix this, we need to instead send that conflicting key somewhere else. Where? We can just send it *upwards*. Hence, we get the algorithm described earlier.
+
+## Deleting from a B+ Tree
 
 Deletion is similarly involved because of the aforementioned invariants but also the one where every node needs to be at least half full at all times.
 
-We consider three cases:
+We'll consider three cases:
 
-**CASE I:** "Just delete". If deleting an entry would *not* cause a node to go below half its capacity, just delete it, and you're done.
+### Case I: Just Delete
+
+If deleting an entry would *not* cause a node to go below half its capacity, just delete it, and you're done.
 
 For example, we can simply delete $k=16$ from its node here:
 
 ![](assets/lec16/b+tree_deletion_case1.png)
 
-**CASE II:** If deleting *would* cause the node to fall below the capacity invariant, you "steal" from your neighbor.
+### Case II: Steal from Sibling
 
-For example, suppose we delete $k=11$ from this B+ tree:
+If deleting *would* cause the node to fall below the capacity invariant, you "steal" from an adjacent sibling.
+
+For example, suppose we delete $k=22$ from this B+ tree:
 
 ![](assets/lec16/b+tree_deletion_case2_before.png)
 
-The node would fall below half capacity, so we can "steal" $4$ from its left neighbor:
+The node would fall below half capacity, so we can "steal" $13$ from its left sibling:
 
 ![](assets/lec16/b+tree_deletion_case2_steal.png)
 
-But that also means we need to update the parent because the parent's node key needs to reflect the child's new lower bound:
+But that also means we need to update the parent because the parent's node key needs to reflect the child's new lower bound. Similarly to [insertion](#case-ii-splitting-a-leaf-at-capacity), we copy the new lower bound of the leaf node into the parent. However, instead of *inserting* that key, we *overwrite* the key that was already at that position (since we didn't create any new leaf nodes, just updated the current one):
 
 ![](assets/lec16/b+tree_deletion_case2_parent_update.png)
 
-Note that we can also steal from the leaf node's right neighbor if need be (also updating its parent pointer's associated key).
+### ASIDE: Steal from Your Siblings, Not Cousins
 
-**CASE III:** What if both neighbors would also fall below capacity if we steal from them? For insertion, the recursive chain reaction can be done in $\log(N)$ steps because it goes upwards into parent levels. If we were to chain react *horizontally* (among leaf nodes), it could take $\frac{N}{2} \in O(N)$ steps. This is no bueno. Instead, we can borrow the same principle from insertion, but in reverse this time. Like how we split in insertion, we can *merge* nodes together:
+> [!WARNING]
+>
+> Note that we use the term **sibling** instead of **neighbor**. Two nodes are **siblings** if they share the same **parent**. Two neighboring nodes are not necessarily siblings. They could be **cousins** instead.
+
+Why? Suppose we steal from a cousin instead. Starting with this B+ tree, we remove $k=22$:
+
+![](assets/lec16/b+tree_deletion_cousin_steal_before.png)
+
+Suppose we reach across to the cousin on the right, stealing $31$:
+
+![](assets/lec16/b+tree_deletion_cousin_steal_after.png)
+
+See a problem? Look up&mdash;even higher than the parents. The *root* has been invalidated (31 appears to the left of 30 now!). More generally, it will invalidate the cousins' [**lowest common ancestor**](https://en.wikipedia.org/wiki/Lowest_common_ancestor). Thus, stealing from a cousin is incorrect. Only steal from your siblings.
+
+### Case III: Both Siblings Are Also Broke
+
+What if both of your adjacent siblings would also fall below capacity if we steal from them? For insertion, the recursive chain reaction can be done in $\log(N)$ steps because it goes upwards into parent levels. If we were to chain react *horizontally* (among leaf nodes), it could take $\frac{N}{2} \in O(N)$ steps. This is no bueno. Instead, we can borrow the same principle from insertion, but in reverse this time. Like how we split in insertion, we can analogously *merge* nodes together:
 
 1. Delete the key.
 2. Then merge the leaf node with its neighbor.
@@ -333,21 +403,53 @@ Note that we can also steal from the leaf node's right neighbor if need be (also
 
 Note that this case is only taken if the nodes involved are already at half capacity, so merging the nodes is always valid (it won't cause the newly merged node to overflow; the invariants are maintained).
 
-For example, suppose we want to remove $k=11$ from this B+ tree:
+For example, suppose we want to remove $k=21$ from this B+ tree:
 
 ![](assets/lec16/b+tree_deletion_case3_before.png)
 
-We can't steal from either neighbor because they're already at half capacity. Let's first delete $11$ anyway. Then, *merge* the node with its left neighbor:
+We can't steal from either sibling because they're already at half capacity. Let's first delete $21$ anyway. Then, *merge* the node with its left sibling:
 
-![](assets/lec16/b+tree_deletion_case3_merge.png)
+![](assets/lec16/b+tree_deletion_case3_leaf_merge.png)
 
-Notice that the parent's node key is now outdated&mdash;the node key $10$ implies that all table keys below the leftmost pointer are $< 10$, but that's no longer true because we now have table key $10$ from the merge. We update the parent by deleting that node key as well and shifting over the node keys:
+Notice that the parent's node key is now outdated&mdash;the node key $13$ implies that all table keys below the leftmost pointer are $< 13$, but that's no longer true because we now have table key $13$ from the merge. The pointer to the right of the node key is now also missing/dangling. We fix the parent by just deleting that node key as well:
 
-![](assets/lec16/b+tree_deletion_case3_parent_update.png)
+![](assets/lec16/b+tree_deletion_case3_parent_delete.png)
 
-Finally, as an exercise: what happens if that causes the parent node to itself fall below half capacity? Think about how we can continue, considering how we handled it for [insertions](#inserting-into-a-b-tree).
+If the parent did not fall below half capacity, we would be done here. However, in this example, the parent node is now in an invalid state because it fell below half capacity. Similar to insertion, the solution is to repeat a similar process for internal nodes as well. That is, see if the internal node can *steal* a value to get back to half capacity. However, the rules are slightly different for them:
 
-### Online Tools for Visualization
+> [!IMPORTANT]
+>
+> Leaf nodes steal from adjacent **siblings**. Internal nodes steal from **parents**.
+
+The stealing from the parent is actually a **rotation**: keys move in a circular fashion within the local family (node, parent, sibling):
+
+1. Steal the leftmost value of the parent.
+2. Promote the leftmost value of the right sibling up into the parent to replace that stolen value.
+3. Move the pointer over from the right sibling.
+
+Before:
+
+![](assets/lec16/b+tree_deletion_case3_rotation_before.png)
+
+After:
+
+![](assets/lec16/b+tree_deletion_case3_rotation_after.png)
+
+Once again, convince yourself that this is still a valid B+ tree.
+
+Finally, if the sibling cannot afford to lose a key for the rotation, the internal nodes themselves need to merge. We didn't explicitly cover this case in lecture, but I encourage you to [try it out online](#online-tools-for-b-tree-visualization). It's a little tricky&mdash;analogous to how we need to promote a value to the parent when splitting internal nodes, we demote a value from the parent when merging internal nodes, which *could* ultimately *remove* (replace) the original root node.
+
+### ASIDE: How Do B+ Trees Stay Balanced Despite Insertions/Deletions?
+
+From Ed: How do we ensure the tree is balanced even throughout insertions and deletions?
+
+In short: The splitting and merging themselves are always done *horizontally*. The higher levels might need to split/merge themselves, but that's fine because they also do so within their level. Even if a new root node is created/deleted, the existing nodes still remain on the same level relative to each other.
+
+## Online Tools for B+ Tree Visualization
+
+> [!TIP]
+>
+> Me manually drawing and pasting the B+ trees above is a bit clunky and may not make the process completely clear. If you want a more interactive resource to visualize B+ tree optimizations, definitely check out the online tools I list here.
 
 From my post on Ed:
 

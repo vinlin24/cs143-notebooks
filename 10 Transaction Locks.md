@@ -348,7 +348,7 @@ This motivates a *stricter* version of 2PL.
 >
 > **Strict 2PL** is 2PL but transactions can only unlock exactly at commit/rollback (i.e. at the very end of the transaction).
 
-Recall that 2PL lets you unlock *whenever* you want, just as long as it's after locks. You can even do it in multiple steps like we saw in an [earlier example](#two-phase-locking-2pl). **Strict 2PL** forces you to only unlock (and unlock *all* locks) exactly at commit/rollback.
+Recall that 2PL lets you unlock *whenever* you want, just as long as it's after all locks. You can even do it in multiple steps like we saw in an [earlier example](#two-phase-locking-2pl). **Strict 2PL** forces you to only unlock (and unlock *all* locks) exactly at commit/rollback.
 
 The [problematic rollback example above](#rollbacks) can be fixed to use strict 2PL:
 
@@ -483,7 +483,7 @@ Consider this schedule:
 |                   | S(A), R(A)   |
 | ~~X(A), W(A)~~    |              |
 |                   | COMMIT, U(A) |
-| X(A), X(A)        |              |
+| X(A), W(A)        |              |
 
 1. $T_1$ acquires the shared lock $S(A)$.
 2. $T_2$ also acquires the shared lock $S(A)$, which is fine because the shared lock can have multiple holders, and $T_1$ and $T_2$ only need to read from $A$ so far anyway.

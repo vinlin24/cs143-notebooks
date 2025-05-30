@@ -647,7 +647,7 @@ graph LR;
 
 We'll add a directed edge between two nodes if their corresponding transactions have a conflict.
 
-1. Start with $R_2(A), R_2(B)$. This is not a conflict. Nothing to do yet.
+1. Start with $R_2(A), R_1(B)$. This is not a conflict. Nothing to do yet.
 2. Then consider $R_2(A), W_2(A)$. This isn't a conflict either because it's in the same transaction (remember transactions run in order within themselves).
 3. Then consider $R_2(A), R_3(A)$. This isn't a conflict because two reads cannot conflict with each other.
 4. Then consider $R_2(A), W_1(B)$. No conflict.

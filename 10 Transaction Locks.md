@@ -483,7 +483,7 @@ Consider this schedule:
 |                   | S(A), R(A)   |
 | ~~X(A), W(A)~~    |              |
 |                   | COMMIT, U(A) |
-| X(A), X(A)        |              |
+| X(A), W(A)        |              |
 
 1. $T_1$ acquires the shared lock $S(A)$.
 2. $T_2$ also acquires the shared lock $S(A)$, which is fine because the shared lock can have multiple holders, and $T_1$ and $T_2$ only need to read from $A$ so far anyway.

@@ -100,7 +100,7 @@ Notice that there's some (pretty bad) error between the *estimated* numbers and 
 
 Taking a step back: why do we care about joins so much?
 
-- Joins are *expensive* because are the only operator that can produce a *larger* table than its operands table. What's more, it scales quadratically (as opposed to something like union, which is at most $N + M$). If we don't do it right, the size of the intermediates can quickly blow up.
+- Joins are *expensive* because they are the only operator that can produce a *larger* table than its operands table. What's more, it scales quadratically (as opposed to something like union, which is at most $N + M$). If we don't do it right, the size of the intermediates can quickly blow up.
 - That then begs the question: why do we join so much instead of just using unions? We *need* joins because we need to reconcile information from different tables that were decomposed to reduce dependency (see: decomposition lecture).
 
 ## Hashing (Continued)

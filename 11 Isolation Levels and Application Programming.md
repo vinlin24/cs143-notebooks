@@ -212,7 +212,7 @@ Consider this schedule:
 | L(A), W(A), U(A), COMMIT |                          |                          |
 |                          |                          | L(A), W(A), U(A), COMMIT |
 
-Strict 2PL is upheld independently for reads: all locks occur before any unlocks in $T_2$, and we unlock at commit. Strict 2PL is upheld independently for writes too: all locks occur before any locks in both $T_1$ and $T_3$, and they unlock at commit. Strict 2PL is also upheld when considering reads and writes *together*. It turns out that for *strict* 2PL, it doesn't actually matter if we take the locking to mean Case I or Case II, but for the sake of consistency (no pun intended), we'll refer to Case II (locking *together*).
+Strict 2PL is upheld independently for reads: all locks occur before any unlocks in $T_2$, and we unlock at commit. Strict 2PL is upheld independently for writes too: all locks occur before any unlocks in both $T_1$ and $T_3$, and they unlock at commit. Strict 2PL is also upheld when considering reads and writes *together*. It turns out that for *strict* 2PL, it doesn't actually matter if we take the locking to mean Case I or Case II, but for the sake of consistency (no pun intended), we'll refer to Case II (locking *together*).
 
 > [!NOTE]
 >

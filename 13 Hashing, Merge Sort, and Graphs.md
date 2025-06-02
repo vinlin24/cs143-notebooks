@@ -280,7 +280,7 @@ for i in range(s_start, s_end + 1):
         print(*R[i], *S[j])
 ```
 
-Output $2bx, d4y, d4z, e4y, e4z$.
+Output $b2x, d4y, d4z, e4y, e4z$.
 
 ```
                        v

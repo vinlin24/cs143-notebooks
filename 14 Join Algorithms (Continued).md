@@ -208,7 +208,7 @@ Using the same techniques (either counting edges or paths):
 
 $1 + 3 = 4$ output tuples. We see that this join order has seemingly *linear* scaling as opposed to quadratic. This comes from the fact that all $z$ have at most edge coming out of it on the $T$ side, so we don't have the quadratic explosion associated with computing all combinations of some many tuples on the left with some many tuples on the right.
 
-Computing $S \bowtie T$ first is better, so $(R \bowtie S) \bowtie T$ is the better join order.
+Computing $S \bowtie T$ first is better, so $(S \bowtie T) \bowtie R$ is the better join order.
 
 ### General Case with Quadratic Scaling
 

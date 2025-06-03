@@ -421,10 +421,10 @@ If the parent did not fall below half capacity, we would be done here. However, 
 >
 > Leaf nodes steal from adjacent **siblings**. Internal nodes steal from **parents**.
 
-The stealing from the parent is actually a **rotation**: keys move in a circular fashion within the local family (node, parent, sibling):
+The stealing from the parent is actually a **rotation**: keys move in a circular fashion within the local family (node, parent, sibling). For this particular example, we:
 
-1. Steal the leftmost value of the parent.
-2. Promote the leftmost value of the right sibling up into the parent to replace that stolen value.
+1. Steal from the parent the key separating you and the sibling. That's 30 in this case.
+2. Promote the leftmost key of the right sibling up into the parent to replace that stolen key. That's 40 in this case.
 3. Move the pointer over from the right sibling.
 
 Before:
@@ -437,7 +437,27 @@ After:
 
 Once again, convince yourself that this is still a valid B+ tree.
 
+See [below](#deletion-summary) for the more general form of the algorithm.
+
 Finally, if the sibling cannot afford to lose a key for the rotation, the internal nodes themselves need to merge. We didn't explicitly cover this case in lecture, but I encourage you to [try it out online](#online-tools-for-b-tree-visualization). It's a little tricky&mdash;analogous to how we need to promote a value to the parent when splitting internal nodes, we demote a value from the parent when merging internal nodes, which *could* ultimately *remove* (replace) the original root node.
+
+### Deletion Summary
+
+From Professor in Ed #114:
+
+> If the node does not underflow after deletion, just delete.
+>
+> If a node (either leaf or internal) will underflow:
+>
+> 1. Check if there is a sibling that has at least capacity / 2 + 1 nodes. If so, steal from that sibling. See below for how to steal.
+> 2. Otherwise, merge with a sibling, and delete the parent key separating you from that sibling (which may trigger further steals / merges).
+When you are a leaf node and you need to steal:
+>
+> If stealing from a right sibling, take the left-most key; if stealing from the left, take the right-most key. In either case you need to update the parent key separating you and the sibling - how should you do that?
+>
+> When you are an internal node and you need to steal:
+>
+> Steal the parent key separating you and the sibling, then promote a key in the sibling to become the parent (which key should you promote)?
 
 ### ASIDE: How Do B+ Trees Stay Balanced Despite Insertions/Deletions?
 

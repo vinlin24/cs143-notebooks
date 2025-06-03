@@ -280,7 +280,7 @@ for i in range(s_start, s_end + 1):
         print(*R[i], *S[j])
 ```
 
-Output $2bx, d4y, d4z, e4y, e4z$.
+Output $b2x, d4y, d4z, e4y, e4z$.
 
 ```
                        v
@@ -301,7 +301,7 @@ R: 2x, 4y, 4z, 6z
                   ^
 ```
 
-Done. Output is $\lbrace 2bx, d4y, d4z, e4y, e4z \rbrace$, as expected.
+Done. Output is $\lbrace b2x, d4y, d4z, e4y, e4z \rbrace$, as expected.
 
 ## Graph Formulation of Relations
 

@@ -506,7 +506,7 @@ We can similarly apply the [virus injection proof](#proof-by-picture) for this p
 
 The last pass is the [traditional hash join like we've covered above](#hashmap-initialization--lookup-walkthrough). However, now we can compute the join $(S \bowtie T) \bowtie R$ (on the reduced relations) without [quadratic blowup only to throw away intermediates](#general-case-with-quadratic-scaling). The first two passes already "threw away the junk". The only tuples remaining are the ones guaranteed to show up in the output.
 
-The final runtime is $O(|IN| + OUT|)$.
+The final runtime is $O(|IN| + |OUT|)$.
 
 ### Join Trees with Multiple Children
 

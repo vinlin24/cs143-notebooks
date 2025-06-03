@@ -462,7 +462,13 @@ Finally, we return to the punchline. Why do we care about whether a query is mon
 
 > [!IMPORTANT]
 >
-> If a query is monotonic, it implies that a nested query can actually be unnested. [&mdash;Wikipedia](https://en.wikipedia.org/wiki/Monotonic_query)
+> Non-monotone queries cannot be unnested into a query that only uses monotone operations. &mdash;Professor (Ed #129)
+
+**ASIDE:** More from Professor on Ed #129:
+
+> In practice, not all queries get unnested, and many systems execute nested queries by running the inner query in a loop, so it's not pure relational algebra anymore (rather RA + loops).
+>
+> There are some research systems that do unnest virtually any query: https://duckdb.org/2023/05/26/correlated-subqueries-in-sql.html The full algorithm is complicated, and you don't need to know it for this class.
 
 ### SQL Challenge: People Without Pets (Outer Join Edition)
 

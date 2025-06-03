@@ -208,7 +208,7 @@ Using the same techniques (either counting edges or paths):
 
 $1 + 3 = 4$ output tuples. We see that this join order has seemingly *linear* scaling as opposed to quadratic. This comes from the fact that all $z$ have at most edge coming out of it on the $T$ side, so we don't have the quadratic explosion associated with computing all combinations of some many tuples on the left with some many tuples on the right.
 
-Computing $S \bowtie T$ first is better, so $(R \bowtie S) \bowtie T$ is the better join order.
+Computing $S \bowtie T$ first is better, so $(S \bowtie T) \bowtie R$ is the better join order.
 
 ### General Case with Quadratic Scaling
 
@@ -404,7 +404,7 @@ $$s = (2, 4), 4 \in T.z$$
 $$s = (3, 4), 4 \in T.z$$
 $$s = (4, 4), 4 \in T.z$$
 
-The tuples $s = (1, 2)$ and $s = (1, 2)$ get discarded, so we remove their edges from the graph representation as well:
+The tuples $s = (1, 2)$ and $s = (1, 3)$ get discarded, so we remove their edges from the graph representation as well:
 
 ```mermaid
 graph LR;
@@ -506,7 +506,7 @@ We can similarly apply the [virus injection proof](#proof-by-picture) for this p
 
 The last pass is the [traditional hash join like we've covered above](#hashmap-initialization--lookup-walkthrough). However, now we can compute the join $(S \bowtie T) \bowtie R$ (on the reduced relations) without [quadratic blowup only to throw away intermediates](#general-case-with-quadratic-scaling). The first two passes already "threw away the junk". The only tuples remaining are the ones guaranteed to show up in the output.
 
-The final runtime is $O(|IN| + OUT|)$.
+The final runtime is $O(|IN| + |OUT|)$.
 
 ### Join Trees with Multiple Children
 

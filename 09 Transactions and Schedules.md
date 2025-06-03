@@ -668,6 +668,10 @@ If we dutifully work through the rest of the pairs:
 - $R_1(B), W_2(B)$ is a conflict. We add an edge from $T_1$ to $T_2$.
 - $W_2(A), W_3(A)$ is a conflict. We *could* add another edge from $T_2$ to $T_3$, but for the purposes demonstrated later, we can de-duplicate edges. Nothing to do here.
 
+> [!NOTE]
+>
+> Note that "duplicate" edges are uninteresting in this formulation&mdash;we just need one directed edge $A \to B$ even if $A$ followed by $B$ conflict in multiple ways.
+
 This is the final precedence graph:
 
 ```mermaid
@@ -738,9 +742,12 @@ $$R_2(A), R_1(B), W_2(A), R_2(B), R_3(A), W_1(B), W_3(A), W_2(B)$$
 
 First identify all the conflicting pairs:
 
+- $R_2(A), W_3(A)$
 - $R_1(B), W_2(B)$
-- $R_2(A), W_3(A)$ AND $W_2(A), R_3(A)$
+- $W_2(A), R_3(A)$
+- $W_2(A), W_3(A)$
 - $R_2(B), W_1(B)$
+- $W_1(B), W_2(B)$
 
 Now we add the edges:
 

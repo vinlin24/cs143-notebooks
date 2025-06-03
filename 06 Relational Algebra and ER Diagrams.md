@@ -278,7 +278,7 @@ Using this concrete example, how many tuples would that natural join output?
 | --- | --- |
 | 1   | 10  |
 | 2   | 10  |
-| 2   | 10  |
+| 2   | 20  |
 
 </td>
 <td>

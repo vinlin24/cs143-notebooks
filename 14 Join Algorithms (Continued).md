@@ -404,7 +404,7 @@ $$s = (2, 4), 4 \in T.z$$
 $$s = (3, 4), 4 \in T.z$$
 $$s = (4, 4), 4 \in T.z$$
 
-The tuples $s = (1, 2)$ and $s = (1, 2)$ get discarded, so we remove their edges from the graph representation as well:
+The tuples $s = (1, 2)$ and $s = (1, 3)$ get discarded, so we remove their edges from the graph representation as well:
 
 ```mermaid
 graph LR;

@@ -332,9 +332,9 @@ Recall from math: a function $f: R \to R$ is **monotone** if $x \le y$ implies $
 
 | Examples of monotone functions | Examples of non-monotone functions |
 | ------------------------------ | ---------------------------------- |
-| $x^3 + x^2$                    | $x^3 - x^2$                        |
-| $e^x$                          | $e^{-x}$                           |
-| $\log(x)$                      | $\frac{1}{x}$                      |
+| $e^x$                          | $x^3 - x^2$                        |
+| $\log(x)$                      | $e^{-x}$                           |
+|                                | $\frac{1}{x}$                      |
 
 Intuitively: a monotone function "never goes down" when you read its graph from left to right. An example is my unhappiness as a function of time.
 

@@ -429,7 +429,7 @@ How do databases get around this? They organize records in a data structure call
 
 Actual keys from the relation (e.g. `id` values) are stored in the last level (leaf nodes) of the B+ tree. The leaf nodes also store pointers to the actual *data* (records) associated with the keys. The internal nodes form a hierarchical structure of pointers that direct *ranges* of key values down the correct sub-trees and ultimately to the correct leaf nodes.
 
-The process of finding a key is very similar in principle to searching **binary search trees (BSTs)** in that we recursively make comparisons on the search value to determine which pointer to follow. Suppose we're interesting in some key value $k$. At each internal node, we find the pointer that corresponds to some `[inclusive, exclusive)` range that includes our key value $k$ and follow that pointer to the next node. We then repeat until the leaf node, at which point the key's pointer points to the actual record we want to retrieve.
+The process of finding a key is very similar in principle to searching **binary search trees (BSTs)** in that we recursively make comparisons on the search value to determine which pointer to follow. Suppose we're interested in some key value $k$. At each internal node, we find the pointer that corresponds to some `[inclusive, exclusive)` range that includes our key value $k$ and follow that pointer to the next node. We then repeat until the leaf node, at which point the key's pointer points to the actual record we want to retrieve.
 
 > [!WARNING]
 >

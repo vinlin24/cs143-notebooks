@@ -451,7 +451,8 @@ From Professor in Ed #114:
 >
 > 1. Check if there is a sibling that has at least capacity / 2 + 1 nodes. If so, steal from that sibling. See below for how to steal.
 > 2. Otherwise, merge with a sibling, and delete the parent key separating you from that sibling (which may trigger further steals / merges).
-When you are a leaf node and you need to steal:
+>
+> When you are a leaf node and you need to steal:
 >
 > If stealing from a right sibling, take the left-most key; if stealing from the left, take the right-most key. In either case you need to update the parent key separating you and the sibling - how should you do that?
 >

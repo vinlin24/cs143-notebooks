@@ -507,6 +507,6 @@ ON table_name(column_list);
 There are two types of indices:
 
 - **Clustered** indices: in addition to creating the index, the records themselves are also stored contiguously in memory.
-- **Unclustered** indices: the records might not be in contiguous in record.
+- **Unclustered** indices: the records might not be in contiguous in memory.
 
 To be continued.

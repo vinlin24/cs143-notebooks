@@ -8,4 +8,4 @@ Following the confusion caused by an oversight in Lecture 16 (Ed #107), this lec
 
 ## External Storage Joins
 
-TODO. Will update later. Professor confirmed with me that next quiz (2025-05-29) will be on B+ trees and not external storage joins, so don't worry.
+Not tested on the final, but if you're interested, you can read more about them here: https://courses.cs.washington.edu/courses/cse344/24au/lectures/lec24_external_memory_algorithms.pdf.

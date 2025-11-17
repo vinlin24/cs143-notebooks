@@ -241,7 +241,7 @@ Other important properties:
 
 ## Searching a B+ Tree
 
-Searching a B+ tree is very similar in nature to searching a **binary search tree (BST)** in that we compare the queried value $k$ to the current node to decide which pointer to follow. In the case of a B+ tree internal node, we have multiple node keys to test. Because they are stored in sorted order, we can simply sweep the node keys until we reach one that is $\ge k$. We then follow the pointer that sits just before that node key (or use the last pointer if $k$ happens to be $\ge$ every node key).
+Searching a B+ tree is very similar in nature to searching a **binary search tree (BST)** in that we compare the queried value $k$ to the current node to decide which pointer to follow. In the case of a B+ tree internal node, we have multiple node keys to test. Because they are stored in sorted order, we can simply sweep the node keys until we reach one that is $> k$. We then follow the pointer that sits just before that node key (or use the last pointer if $k$ happens to be $>$ every node key).
 
 For example, suppose we're searching for $k=12$ in this B+ tree:
 
